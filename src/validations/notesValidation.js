@@ -1,11 +1,11 @@
-import { Joi, Segments } from "celebrate";
+import { Joi, Segments } from 'celebrate';
 import { isValidObjectId } from 'mongoose';
-import { TAGS } from "../constants/tags.js";
+import { TAGS } from '../constants/tags.js';
 export const createNoteSchema = {
   [Segments.BODY]: Joi.object({
-    title: Joi.string().min(3).required(),
-    content: Joi.string(),
-    tag : Joi.string().valid(...TAGS).required(),
+    title: Joi.string().min(1).required(),
+    content: Joi.string().allow(''),
+    tag: Joi.string().valid(...TAGS),
   }),
 };
 const objectIdValidator = (value, helpers) => {
@@ -23,9 +23,11 @@ export const updateNoteSchema = {
     noteId: Joi.string().custom(objectIdValidator).required(),
   }),
   [Segments.BODY]: Joi.object({
-  title: Joi.string().min(3).required(),
+    title: Joi.string().min(1),
     content: Joi.string(),
-    tag : Joi.string().valid(...TAGS).required(),
+    tag: Joi.string()
+      .valid(...TAGS)
+      .required(),
   }).min(1),
 };
 
@@ -34,8 +36,8 @@ export const getAllNotesSchema = {
     page: Joi.number().integer().min(1).default(1),
     perPage: Joi.number().integer().min(5).max(20).default(10),
     tag: Joi.string().valid(...TAGS),
-    search: Joi.string().trim().allow(""),
-    sortBy: Joi.string().valid("_id", "title", "content", "tag").default("_id"),
-    sortOrder: Joi.string().valid("asc", "desc").default("asc"),
+    search: Joi.string().trim().allow(''),
+    sortBy: Joi.string().valid('_id', 'title', 'content', 'tag').default('_id'),
+    sortOrder: Joi.string().valid('asc', 'desc').default('asc'),
   }),
 };
